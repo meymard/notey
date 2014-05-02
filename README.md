@@ -1,0 +1,4 @@
+notey
+=====
+
+Manage your notes
