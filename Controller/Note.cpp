@@ -10,13 +10,6 @@ using namespace Console::View;
 std::vector<Core::Model::Note>* Note::notes = new std::vector<Core::Model::Note>();
 DataSave* Note::db;
 
-/**
- * Load Note
- *
- * @param int id The Note id
- *
- * @return Core::Model::Note
- */
 Core::Model::Note Note::load(int id)
 {
     Core::Model::Note note = Core::Model::Note("Ceci est un test", "Voiciint isSave =  son contenu");
@@ -24,11 +17,6 @@ Core::Model::Note Note::load(int id)
     return note;
 }
 
-/**
- * Load all Note
- *
- * @return Core::Model::Note
- */
 vector<Core::Model::Note>* Note::loadAll()
 {
     Note::notes = Note::db->loadAll();
@@ -36,11 +24,6 @@ vector<Core::Model::Note>* Note::loadAll()
     return Note::notes;
 }
 
-/**
- * Add Note
- *
- * @return bool
- */
 bool Note::add()
 {
     Model::Note* note = new Model::Note();
@@ -48,23 +31,11 @@ bool Note::add()
     return Note::edit(note);
 }
 
-/**
- * Edit Note
- *
- * @return bool
- */
 bool Note::edit()
 {
     return Note::edit(Note::getNote());
 }
 
-/**
- * Edit Note
- *
- * @param Core::Model::Note* note The note to edit
- *
- * @return bool
- */
 bool Note::edit(Core::Model::Note* note)
 {
     note = Menu::editNote(note);
@@ -72,13 +43,6 @@ bool Note::edit(Core::Model::Note* note)
     return Note::save(note);
 }
 
-/**
- * Save Note
- *
- * @param Core::Model::Note* note The note to save
- *
- * @return bool
- */
 bool Note::save(Core::Model::Note* note)
 {
     Note::db->save(note);
@@ -100,21 +64,11 @@ void Note::show()
     Menu::showNote(note);
 }
 
-/**
- * List notes
- *
- * @return int
- */
 int Note::list()
 {
     Menu::listNotes(Note::notes);
 }
 
-/**
- * Remove Note
- *
- * @return bool
- */
 bool Note::remove()
 {
     int id = Menu::removeNote();
@@ -122,13 +76,6 @@ bool Note::remove()
     return Note::remove(id);
 }
 
-/**
- * Remove Note
- *
- * @param int id The Note id to remove
- *
- * @return bool
- */
 bool Note::remove(int id)
 {
     // Remove on database
@@ -145,11 +92,6 @@ bool Note::remove(int id)
     return false;
 }
 
-/**
- * Get note
- *
- * @return Core::Model::Note*
- */
 Core::Model::Note* Note::getNote()
 {
     Core::Model::Note* note = new Core::Model::Note();
@@ -166,11 +108,6 @@ Core::Model::Note* Note::getNote()
     return note;
 }
 
-/**
- * show menu
- *
- * @return choice
- */
 string Note::menu()
 {
     string choice = Menu::show();
@@ -178,9 +115,6 @@ string Note::menu()
     return choice;
 }
 
-/**
- * End
- */
 bool Note::end()
 {
     Menu::end();
