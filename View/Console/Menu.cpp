@@ -47,6 +47,7 @@ void Menu::list(std::vector<Core::Model::Note>* notes) {
 Core::Model::Note* Menu::edit(Core::Model::Note* note)
 {
     bool edit;
+
     cout << COLOR_GREEN;
     cout << "##################" << endl;
     if (note->getId() == 0) {
@@ -69,13 +70,15 @@ Core::Model::Note* Menu::edit(Core::Model::Note* note)
     cin.getline(title, 256);
     if (!edit || string(title) != "") {
         note->setTitle(string(title));
+    } else if (edit && string(title) == "") {
+        // Show error "Title can't be empty"
     }
 
     // Set Body
     string body, bodyLine;
     cout << "Set body:" << endl;
     if (edit) {
-        cout << COLOR_ORANGE << " (empty if not change)" << COLOR_DEFAULT;
+        cout << COLOR_ORANGE << "(empty if not change)" << COLOR_DEFAULT;
     }
     cout << endl;
     cout << COLOR_ORANGE << "(end by blank line)" << COLOR_DEFAULT << endl;
@@ -89,6 +92,8 @@ Core::Model::Note* Menu::edit(Core::Model::Note* note)
 
     if (!edit || body != "") {
         note->setBody(body);
+    } else if (edit && body == "") {
+        // Show error "Body can't be empty"
     }
 
     cout << endl;

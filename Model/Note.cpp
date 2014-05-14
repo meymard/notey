@@ -10,12 +10,12 @@ int Note::lastId = 0;
 
 Note::Note()
 {
-    this->id = ++Note::lastId;
+    this->id = 0;
 }
 
 Note::Note(string title, string body)
 {
-    this->id = ++Note::lastId;
+    this->id = 0;
 
     this->title = title;
     this->body = body;
