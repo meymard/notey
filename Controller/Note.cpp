@@ -7,12 +7,13 @@ using namespace std;
 using namespace Core::Controller;
 using namespace Console::View;
 
+Core::View::NoteInterface *Note::view;
 std::vector<Core::Model::Note>* Note::notes = new std::vector<Core::Model::Note>();
 DataSave* Note::db;
 
 Core::Model::Note Note::load(int id)
 {
-    Core::Model::Note note = Core::Model::Note("Ceci est un test", "Voiciint isSave =  son contenu");
+    Core::Model::Note note = Core::Model::Note("Ceci est un test", "Voici son contenu");
 
     return note;
 }
@@ -38,7 +39,7 @@ bool Note::edit()
 
 bool Note::edit(Core::Model::Note* note)
 {
-    note = Menu::editNote(note);
+    note = Note::view->edit(note);
 
     return Note::save(note);
 }
@@ -61,17 +62,17 @@ bool Note::save(Core::Model::Note* note)
 void Note::show()
 {
     Core::Model::Note* note = Note::getNote();
-    Menu::showNote(note);
+    Note::view->show(note);
 }
 
 int Note::list()
 {
-    Menu::listNotes(Note::notes);
+    Note::view->list(Note::notes);
 }
 
 bool Note::remove()
 {
-    int id = Menu::removeNote();
+    int id = Note::view->remove();
 
     return Note::remove(id);
 }
@@ -96,7 +97,7 @@ Core::Model::Note* Note::getNote()
 {
     Core::Model::Note* note = new Core::Model::Note();
 
-    int id = Menu::selectNote(Note::notes);
+    int id = Note::view->select(Note::notes);
 
     for (vector<Core::Model::Note>::iterator it = Note::notes->begin(); it != Note::notes->end(); ++it) {
         if (id == it->getId()) {
@@ -108,14 +109,14 @@ Core::Model::Note* Note::getNote()
     return note;
 }
 
-string Note::menu()
+/*string Note::menu()
 {
-    string choice = Menu::show();
+    string choice = Note::view->showMenu();
 
     return choice;
-}
+}*/
 
-bool Note::end()
+/*bool Note::end()
 {
-    Menu::end();
-}
+    Note::view->end();
+}*/

@@ -28,7 +28,7 @@ const string COLOR_BG_PURPLE   = "\33[0;45m";
 const string COLOR_BG_CYAN     = "\33[0;46m";
 const string COLOR_BG_GREY     = "\33[0;47m";
 
-void Menu::listNotes(std::vector<Core::Model::Note>* notes) {
+void Menu::list(std::vector<Core::Model::Note>* notes) {
     cout << COLOR_GREEN;
     cout << "##################" << endl;
     cout << "###### List ######" << endl;
@@ -44,7 +44,7 @@ void Menu::listNotes(std::vector<Core::Model::Note>* notes) {
     cout << endl;
 }
 
-Core::Model::Note* Menu::editNote(Core::Model::Note* note)
+Core::Model::Note* Menu::edit(Core::Model::Note* note)
 {
     bool edit;
     cout << COLOR_GREEN;
@@ -96,7 +96,7 @@ Core::Model::Note* Menu::editNote(Core::Model::Note* note)
     return note;
 }
 
-void Menu::showNote(Note* note)
+void Menu::show(Note* note)
 {
     cout << "#" << note->getId() << endl;
     cout << COLOR_CYAN << note->getTitle() << COLOR_DEFAULT <<  endl;
@@ -111,9 +111,9 @@ void Menu::showNote(Note* note)
     cout << COLOR_DEFAULT << endl;
 }
 
-int Menu::selectNote(vector<Note>* notes)
+int Menu::select(vector<Note>* notes)
 {
-    Menu::listNotes(notes);
+    Menu::list(notes);
 
     cout << COLOR_GREEN;
     cout << "Enter a note id :";
@@ -125,7 +125,7 @@ int Menu::selectNote(vector<Note>* notes)
     return id;
 }
 
-int Menu::removeNote()
+int Menu::remove()
 {
     cout << COLOR_RED;
     cout << "##################" << endl;
@@ -140,7 +140,7 @@ int Menu::removeNote()
     return id;
 }
 
-string Menu::show() {
+string Menu::showMenu() {
     cout << COLOR_ORANGE;
     cout << "####################" << endl;
     cout << "# " << COLOR_DEFAULT << "l" << COLOR_ORANGE << ": List note     #" << endl;

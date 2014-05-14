@@ -10,7 +10,7 @@ namespace Console
 {
     namespace View
     {
-        class Menu: public Core::View::Menu
+        class Menu: public Core::View::NoteInterface
         {
             public:
                 /**
@@ -20,14 +20,14 @@ namespace Console
                  *
                  * @return void
                  */
-                static void listNotes(std::vector<Core::Model::Note>* notes);
+                void list(std::vector<Core::Model::Note>* notes);
 
                 /**
                  * Show menu
                  *
                  * @return std::string User choice
                  */
-                static std::string show();
+                std::string showMenu();
 
                 /**
                  * Edit note
@@ -36,7 +36,7 @@ namespace Console
                  *
                  * @param Core::Model::Note*
                  */
-                static Core::Model::Note* editNote(Core::Model::Note* note);
+                Core::Model::Note* edit(Core::Model::Note* note);
 
                 /**
                  * Show note
@@ -45,7 +45,7 @@ namespace Console
                  *
                  * @return void
                  */
-                static void showNote(Core::Model::Note* note);
+                void show(Core::Model::Note* note);
 
                 /**
                  * Select note
@@ -54,21 +54,21 @@ namespace Console
                  *
                  * @return int The selected note
                  */
-                static int selectNote(std::vector<Core::Model::Note>* notes);
+                int select(std::vector<Core::Model::Note>* notes);
 
                 /**
                  * Remove note
                  *
                  * @return int Note to remove
                  */
-                static int removeNote();
+                int remove();
 
                 /**
                  * Show end message
                  *
                  * @return bool
                  */
-                static bool end();
+                bool end();
         };
     }
 }

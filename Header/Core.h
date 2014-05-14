@@ -117,6 +117,19 @@ namespace Core
         };
     }
 
+    namespace View
+    {
+        class NoteInterface
+        {
+            public:
+                virtual void list(std::vector<Core::Model::Note>* notes) = 0;
+                virtual Core::Model::Note* edit(Core::Model::Note* note) = 0;
+                virtual void show(Core::Model::Note* note) = 0;
+                virtual int select(std::vector<Core::Model::Note>* notes) = 0;
+                virtual int remove() = 0;
+        };
+    }
+
     namespace Controller
     {
         /**
@@ -215,6 +228,7 @@ namespace Core
         class Note
         {
             public:
+                static Core::View::NoteInterface *view;
                 /**
                  * @var std::vector<Core::Model::Note>*
                  */
@@ -307,27 +321,6 @@ namespace Core
                  * @return int
                  */
                 static int list();
-
-                /**
-                 * Show menu
-                 *
-                 * @return std::string
-                 */
-                static std::string menu();
-
-                /**
-                 * Show end message
-                 */
-                static bool end();
-        };
-    }
-
-    namespace View
-    {
-        class Menu
-        {
-            public:
-                //virtual void listNotes(Core::Model::Note notes[]) = 0;
         };
     }
 }

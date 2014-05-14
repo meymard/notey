@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "Header/Core.h"
+#include "Header/Console.h"
 
 using namespace std;
 using namespace Core;
@@ -13,9 +14,13 @@ int main( int argc, const char* argv[] )
         printf( "arg %d: %s\n", i, argv[i] );
     }
 
-    // initialze database
+    // initialize database
     const char* file = "/home/meymard/Dropbox/cpp/notes/bin/notey.db";
     Controller::Note::db = new Controller::DataSave(file);
+
+    // Initialize View mode
+    Console::View::Menu *view = new Console::View::Menu();
+    Controller::Note::view = view;
 
     // initialize last Note id
     Model::Note::lastId = 0;
@@ -24,7 +29,7 @@ int main( int argc, const char* argv[] )
 
     string choice = "";
     do {
-        choice = Controller::Note::menu();
+        choice = view->showMenu();
 
             if (choice == "list") {
                 Controller::Note::list();
@@ -39,5 +44,5 @@ int main( int argc, const char* argv[] )
             }
     } while (choice != "quit");
 
-    Controller::Note::end();
+    view->end();
 }
