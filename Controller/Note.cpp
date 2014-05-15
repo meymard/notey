@@ -9,7 +9,7 @@ using namespace Console::View;
 
 Core::View::NoteInterface *Note::view;
 std::vector<Core::Model::Note>* Note::notes = new std::vector<Core::Model::Note>();
-DataSave* Note::db;
+DataSaveInterface* Note::db;
 
 Core::Model::Note Note::load(int id)
 {

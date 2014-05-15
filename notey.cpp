@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Header/Core.h"
 #include "Header/Console.h"
+#include "Header/Sqlite.h"
 
 using namespace std;
 using namespace Core;
@@ -16,7 +17,8 @@ int main( int argc, const char* argv[] )
 
     // initialize database
     const char* file = "/home/meymard/Dropbox/cpp/notes/bin/notey.db";
-    Controller::Note::db = new Controller::DataSave(file);
+    Sqlite::Controller::DataSave *db = new Sqlite::Controller::DataSave(file);
+    Controller::Note::db = db;
 
     // Initialize View mode
     Console::View::Menu *view = new Console::View::Menu();

@@ -3,10 +3,12 @@
 #include <algorithm>
 #include <sqlite3.h>
 #include <sstream>
-#include "../Header/Core.h"
+
+#include "../../Header/Core.h"
+#include "../../Header/Sqlite.h"
 
 using namespace std;
-using namespace Core::Controller;
+using namespace Sqlite::Controller;
 
 DataSave::DataSave(const char* file)
 {
@@ -75,6 +77,15 @@ bool DataSave::save(Core::Model::Note* note)
 bool DataSave::saveAll(vector<Core::Model::Note>* notes)
 {
     return false;
+}
+
+Core::Model::Note* DataSave::load(int id)
+{
+    Core::Model::Note *note = new Core::Model::Note();
+
+    //@TODO
+
+    return note;
 }
 
 vector<Core::Model::Note>* DataSave::loadAll()

@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <stdio.h>
-#include <sqlite3.h>
 
 namespace Core
 {
@@ -133,93 +132,53 @@ namespace Core
     namespace Controller
     {
         /**
-         * DataSave manage note in sqlite
+         * DataSave manage note
          */
-        class DataSave
+        class DataSaveInterface
         {
-            private:
-                /**
-                 * @var sqlite3
-                 */
-                sqlite3 *db;
-
-            protected:
-                /**
-                 * Sqlite3 callback
-                 *
-                 * @var void*  NotUsed   Note used var
-                 * @var int    argc      Arg count
-                 * @var char** argv      Arg values
-                 * @var char** azColName Col name
-                 *
-                 * @return int
-                 */
-                static int callback(void *NotUsed, int argc, char** argv, char **azColName);
-
-                /**
-                 * Escape string for sql query
-                 *
-                 * @param std::string text String to escape
-                 *
-                 * @return std::string
-                 */
-                std::string sqlEscape(std::string text);
-
             public:
                 /**
-                 * Constructor
-                 *
-                 * @var const char* file Sqlite file
-                 */
-                DataSave(const char* file);
-
-                /**
-                 * Destructor
-                 */
-                ~DataSave();
-
-                /**
-                 * Save note in database
+                 * Save note
                  *
                  * @param Core::Model::Note* note
                  *
                  * @return bool
                  */
-                bool save(Core::Model::Note* note);
+                virtual bool save(Core::Model::Note* note) = 0;
 
                 /**
-                 * Save all note in database
+                 * Save all note
                  *
                  * @param std::vector<Core::Model::Note>* notes
                  *
                  * @return bool
                  */
-                bool saveAll(std::vector<Core::Model::Note>* notes);
+                virtual bool saveAll(std::vector<Core::Model::Note>* notes) = 0;
 
                 /**
-                 * Load all note from database
+                 * Load all note
                  *
                  * @return std::vector<Core::Model::Note>*
                  */
-                std::vector<Core::Model::Note>* loadAll();
+                virtual std::vector<Core::Model::Note>* loadAll() = 0;
 
                 /**
-                 * Load note from database
+                 * Load note
                  *
                  * @para int id
                  *
                  * @return Core::Model::Note
                  */
-                Core::Model::Note load(int id);
+                virtual Core::Model::Note* load(int id) = 0;
 
                 /**
-                 * Remove note in database
+                 * Remove note
                  *
                  * @param int id
                  *
                  * @return bool
                  */
-                bool remove(int id);
+                virtual bool remove(int id) = 0;
         };
 
         /**
@@ -235,9 +194,9 @@ namespace Core
                 static std::vector<Core::Model::Note>* notes;
 
                 /**
-                 * @var Core::Controller::DataSave*
+                 * @var Core::Controller::DataSaveInterface*
                  */
-                static Core::Controller::DataSave* db;
+                static DataSaveInterface* db;
 
                 /**
                  * Load note
