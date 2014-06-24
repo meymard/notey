@@ -48,7 +48,7 @@ bool Note::save(Core::Model::Note* note)
 {
     Note::db->save(note);
 
-    for (std::vector<Core::Model::Note>::iterator it = Note::notes->begin(); it != notes->end(); ++it) {
+    for (std::vector<Core::Model::Note>::iterator it = Note::notes->begin(); it != Note::notes->end(); ++it) {
         if (it->getId() == note->getId()) {
             Note::notes->erase(it);
             break;
