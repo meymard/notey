@@ -95,9 +95,14 @@ bool Note::remove(int id)
 
 Core::Model::Note* Note::getNote()
 {
-    Core::Model::Note* note = new Core::Model::Note();
-
     int id = Note::view->select(Note::notes);
+
+    return Note::getNote(id);
+}
+
+Core::Model::Note* Note::getNote(int id)
+{
+    Core::Model::Note* note = new Core::Model::Note();
 
     for (vector<Core::Model::Note>::iterator it = Note::notes->begin(); it != Note::notes->end(); ++it) {
         if (id == it->getId()) {

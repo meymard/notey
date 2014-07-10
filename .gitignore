@@ -23,3 +23,5 @@
 # project ignore
 bin
 workbench.xmi
+.cproject
+.project

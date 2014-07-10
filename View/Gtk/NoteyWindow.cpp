@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include "../../Header/Core.h"
 #include "../../Header/Gtk.h"
@@ -7,40 +8,35 @@
 using namespace Gtk::View;
 using namespace Core;
 
+/**
+ * @see gtkmm-documentation/examples/book/paned/
+ */
 NoteyWindow::NoteyWindow()
-: mVBox(Gtk::ORIENTATION_VERTICAL),
-  mButtonQuit("Quit"),
-  m_Button_Buffer1("B 1"),
-  m_Button_Buffer2("B 2")
-
+: m_VPaned(Gtk::ORIENTATION_HORIZONTAL),
+  mVBox(Gtk::ORIENTATION_VERTICAL),
+  mButtonQuit("Quit")
 {
     set_title("Notey");
 
     set_border_width(5);
     set_default_size(400, 200);
 
-    add(mVBox);
+    add(m_VPaned);
 
-    m_scrolledwindow.add(mTreeView);
-    m_scrolledwindow.add(m_TextView);
+    /* Now add the contents of the two halves of the window */
+    m_VPaned.add1(mTreeView);
+    m_VPaned.add2(m_TextView);
 
     //Only show the scrollbars when they are necessary:
     m_scrolledwindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-    mVBox.pack_start(m_scrolledwindow);
-    mVBox.pack_start(mButtonBox, Gtk::PACK_SHRINK);
-
-    mButtonBox.pack_start(m_Button_Buffer1, Gtk::PACK_SHRINK);
-    mButtonBox.pack_start(m_Button_Buffer2, Gtk::PACK_SHRINK);
-    mButtonBox.pack_start(mButtonQuit, Gtk::PACK_SHRINK);
-    mButtonBox.set_border_width(5);
-    mButtonBox.set_layout(Gtk::BUTTONBOX_END);
-    mButtonQuit.signal_clicked().connect( sigc::mem_fun(*this,
-                &NoteyWindow::onButtonQuit) );
-
     //Create the Tree model:
     mRefTreeModel = Gtk::ListStore::create(mColumns);
     mTreeView.set_model(mRefTreeModel);
+
+    //mTreeView.signal_clicked().connect(
+    //    sigc::mem_fun(*this, &NoteyWindow::onNoteClick)
+    //);
 
     //Fill the TreeView's model
     for (std::vector<Model::Note>::iterator it = Controller::Note::notes->begin(); it != Controller::Note::notes->end(); ++it) {
@@ -64,30 +60,49 @@ NoteyWindow::NoteyWindow()
         pColumn->set_reorderable();
     }
 
-    mVBox.pack_start(mTreeView);
+    // Handler PressButton
+    mTreeView.signal_button_press_event()
+        .connect(sigc::mem_fun(*this, &NoteyWindow::onButtonPressEvent), false);
 
     show_all_children();
 }
 
-void NoteyWindow::fill_buffers()
+bool NoteyWindow::onButtonPressEvent(GdkEventButton* event)
 {
-  m_refTextBuffer1 = Gtk::TextBuffer::create();
-  m_refTextBuffer1->set_text("This is the text from TextBuffer #1.");
+    bool return_value = false;
 
-  m_refTextBuffer2 = Gtk::TextBuffer::create();
-  m_refTextBuffer2->set_text(
-          "This is some alternative text, from TextBuffer #2.");
+    //Then do our custom stuff:
+    if( (event->type == GDK_BUTTON_PRESS) && (event->button == 1) )
+    {
+        this->onNoteClick();
+    }
 
+    // Return false for select highlight line
+    return return_value;
 }
 
-void NoteyWindow::on_button_buffer1()
+void NoteyWindow::onNoteClick()
 {
-  m_TextView.set_buffer(m_refTextBuffer1);
-}
+    Glib::RefPtr<Gtk::TreeView::Selection> refSelection = mTreeView.get_selection();
 
-void NoteyWindow::on_button_buffer2()
-{
-  m_TextView.set_buffer(m_refTextBuffer2);
+    Gtk::TreeModel::iterator iter = refSelection->get_selected();
+    if(iter)
+    {
+        int id = (*iter)[mColumns.mColId];
+        std::cout << "  Selected ID=" << id << std::endl;
+
+        // Get Note
+        Model::Note* note = Controller::Note::getNote(id);
+
+        // Fill TextView
+        const Glib::RefPtr<Gtk::TextBuffer>& mTextBuffer = Gtk::TextBuffer::create();
+        std::ostringstream text;
+        text << "SELECT ID " << id << std::endl;
+        text << note->getTitle() << std::endl;
+        text << note->getBody();
+        mTextBuffer->set_text(text.str());
+        m_TextView.set_buffer(mTextBuffer);
+    }
 }
 
 void NoteyWindow::onButtonQuit()

@@ -222,6 +222,15 @@ namespace Core
                 static Core::Model::Note* getNote();
 
                 /**
+                 * Get note
+                 *
+                 * @param int id
+                 *
+                 * @return Core::Model::Note*
+                 */
+                static Core::Model::Note* getNote(int id);
+
+                /**
                  * Add note
                  *
                  * @return bool

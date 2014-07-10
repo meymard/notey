@@ -41,13 +41,14 @@ namespace Gtk
             protected:
                 void fill_buffers();
 
+                Gtk::Paned m_VPaned;
                 Gtk::ScrolledWindow m_scrolledwindow;
                 Gtk::TextView m_view;
 
                 //Signal handlers:
+                virtual bool onButtonPressEvent(GdkEventButton* event);
+                void onNoteClick();
                 void onButtonQuit();
-                void on_button_buffer1();
-                void on_button_buffer2();
                 //Tree model columns:
                 class ModelColumns : public Gtk::TreeModel::ColumnRecord
                 {
@@ -71,10 +72,8 @@ namespace Gtk
 
                 Gtk::TextView m_TextView;
 
-                Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1, m_refTextBuffer2;
-
                 Gtk::ButtonBox mButtonBox;
-                Gtk::Button mButtonQuit, m_Button_Buffer1, m_Button_Buffer2;
+                Gtk::Button mButtonQuit;
         };
     }
 }
