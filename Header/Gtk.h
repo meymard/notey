@@ -3,6 +3,7 @@
 
 #include <gtkmm.h>
 #include <gtkmm/button.h>
+#include "Core.h"
 
 namespace Gtk
 {
@@ -41,14 +42,16 @@ namespace Gtk
             protected:
                 void fill_buffers();
 
-                Gtk::Paned m_VPaned;
+                Gtk::Paned selectNote;
+                Gtk::Paned noteInfo;
                 Gtk::ScrolledWindow m_scrolledwindow;
-                Gtk::TextView m_view;
+
+                Core::Model::Note* getCurrentNote();
 
                 //Signal handlers:
-                virtual bool onButtonPressEvent(GdkEventButton* event);
                 void onNoteClick();
-                void onButtonQuit();
+                void onTextUpdate();
+
                 //Tree model columns:
                 class ModelColumns : public Gtk::TreeModel::ColumnRecord
                 {
@@ -70,10 +73,8 @@ namespace Gtk
                 Gtk::TreeView mTreeView;
                 Glib::RefPtr<Gtk::ListStore> mRefTreeModel;
 
-                Gtk::TextView m_TextView;
-
-                Gtk::ButtonBox mButtonBox;
-                Gtk::Button mButtonQuit;
+                Gtk::TextView titleTextView;
+                Gtk::TextView bodyTextView;
         };
     }
 }

@@ -9,23 +9,26 @@ using namespace Gtk::View;
 using namespace Core;
 
 /**
- * @see gtkmm-documentation/examples/book/paned/
+ *
  */
 NoteyWindow::NoteyWindow()
-: m_VPaned(Gtk::ORIENTATION_HORIZONTAL),
-  mVBox(Gtk::ORIENTATION_VERTICAL),
-  mButtonQuit("Quit")
+: selectNote(Gtk::ORIENTATION_HORIZONTAL),
+  noteInfo(Gtk::ORIENTATION_VERTICAL)
 {
     set_title("Notey");
 
     set_border_width(5);
     set_default_size(400, 200);
 
-    add(m_VPaned);
+    add(selectNote);
 
-    /* Now add the contents of the two halves of the window */
-    m_VPaned.add1(mTreeView);
-    m_VPaned.add2(m_TextView);
+    // Now add tree and note info
+    selectNote.add1(mTreeView);
+    selectNote.add2(noteInfo);
+
+    // Add note info
+    noteInfo.add1(titleTextView);
+    noteInfo.add2(bodyTextView);
 
     //Only show the scrollbars when they are necessary:
     m_scrolledwindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -33,10 +36,6 @@ NoteyWindow::NoteyWindow()
     //Create the Tree model:
     mRefTreeModel = Gtk::ListStore::create(mColumns);
     mTreeView.set_model(mRefTreeModel);
-
-    //mTreeView.signal_clicked().connect(
-    //    sigc::mem_fun(*this, &NoteyWindow::onNoteClick)
-    //);
 
     //Fill the TreeView's model
     for (std::vector<Model::Note>::iterator it = Controller::Note::notes->begin(); it != Controller::Note::notes->end(); ++it) {
@@ -60,28 +59,41 @@ NoteyWindow::NoteyWindow()
         pColumn->set_reorderable();
     }
 
-    // Handler PressButton
-    mTreeView.signal_button_press_event()
-        .connect(sigc::mem_fun(*this, &NoteyWindow::onButtonPressEvent), false);
+    // Handler Click treeview
+    Glib::RefPtr<Gtk::TreeView::Selection> refSelection = mTreeView.get_selection();
+    refSelection->signal_changed().connect(sigc::mem_fun(*this, &NoteyWindow::onNoteClick), false);
 
     show_all_children();
 }
 
-bool NoteyWindow::onButtonPressEvent(GdkEventButton* event)
+void NoteyWindow::onNoteClick()
 {
-    bool return_value = false;
+    Model::Note* note = this->getCurrentNote();
+    // Fill title
+    const Glib::RefPtr<Gtk::TextBuffer>& titleTextBuffer = Gtk::TextBuffer::create();
+    titleTextBuffer->set_text(note->getTitle());
+    titleTextView.set_buffer(titleTextBuffer);
+    // Event on title
+    titleTextBuffer->signal_changed().connect(sigc::mem_fun(*this, &NoteyWindow::onTextUpdate), false);
 
-    //Then do our custom stuff:
-    if( (event->type == GDK_BUTTON_PRESS) && (event->button == 1) )
-    {
-        this->onNoteClick();
-    }
-
-    // Return false for select highlight line
-    return return_value;
+    // Fill body
+    const Glib::RefPtr<Gtk::TextBuffer>& bodyTextBuffer = Gtk::TextBuffer::create();
+    bodyTextBuffer->set_text(note->getBody());
+    bodyTextView.set_buffer(bodyTextBuffer);
+    // Event on body
+    bodyTextBuffer->signal_changed().connect(sigc::mem_fun(*this, &NoteyWindow::onTextUpdate), false);
 }
 
-void NoteyWindow::onNoteClick()
+void NoteyWindow::onTextUpdate()
+{
+    Model::Note* note = this->getCurrentNote();
+    note->setTitle(titleTextView.get_buffer()->get_text());
+    note->setBody(bodyTextView.get_buffer()->get_text());
+
+    Controller::Note::save(note);
+}
+
+Model::Note* NoteyWindow::getCurrentNote()
 {
     Glib::RefPtr<Gtk::TreeView::Selection> refSelection = mTreeView.get_selection();
 
@@ -89,25 +101,13 @@ void NoteyWindow::onNoteClick()
     if(iter)
     {
         int id = (*iter)[mColumns.mColId];
-        std::cout << "  Selected ID=" << id << std::endl;
 
         // Get Note
-        Model::Note* note = Controller::Note::getNote(id);
-
-        // Fill TextView
-        const Glib::RefPtr<Gtk::TextBuffer>& mTextBuffer = Gtk::TextBuffer::create();
-        std::ostringstream text;
-        text << "SELECT ID " << id << std::endl;
-        text << note->getTitle() << std::endl;
-        text << note->getBody();
-        mTextBuffer->set_text(text.str());
-        m_TextView.set_buffer(mTextBuffer);
+        return Controller::Note::getNote(id);
+    } else {
+        // TODO Throw exception
+        return NULL;
     }
-}
-
-void NoteyWindow::onButtonQuit()
-{
-    hide();
 }
 
 /** Notey Application */
